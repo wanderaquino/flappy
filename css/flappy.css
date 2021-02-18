@@ -1,0 +1,92 @@
+@font-face {
+    font-family: Pixel;
+    src: url("../fonts/Pixel.ttf");
+}
+div[wm-flappy] 
+{
+    position: relative;
+    height: 80%;
+    width: 90%;
+    background: deepskyblue;
+    overflow: hidden;
+    border: solid 1px dodgerblue;
+    box-sizing: border-box;
+}
+
+.flappy-bird {
+    position: absolute;
+    left: calc(50% - 30px);
+    height: 7%;
+    z-index: 1;
+}
+
+.rank {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    font-size: 40px;
+    font-family: Pixel;
+    z-index: 10;
+}
+
+.barrer {
+    display: flex;
+    position: absolute;
+    justify-content: space-between;
+    flex-direction: column;
+    transform: translateX(50px);
+    height: 100%;
+    top: 0;
+}
+
+.barrer, 
+.barrer-up,
+.barrer-down {
+    width: 5rem;
+}
+
+.barrer-up,
+.barrer-down {
+    display: flex;
+    background: linear-gradient(90deg, #639301, #A5E82E);
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+.barrer-up {
+    flex-direction: column-reverse;
+}
+
+.barrer-down {
+    flex-direction: column;
+}
+
+.barrer-down-end,
+.barrer-up-end {
+    width: 5.5rem;
+    height: 1rem;
+    background: linear-gradient(90deg, #639301, #A5E82E);
+    position: relative;
+    top: 0;
+    left:-6px;
+    border: 2px solid black;
+}
+
+@media (max-width: 320px) {
+.barrer, 
+.barrer-up,
+.barrer-down {
+    width: 4rem;
+}
+
+    .barrer-down-end,
+.barrer-up-end {
+    width: 4.5rem;
+    height: 1rem;
+    background: linear-gradient(90deg, #639301, #A5E82E);
+    position: relative;
+    top: 0;
+    left:-6px;
+    border: 2px solid black;
+}
+}
