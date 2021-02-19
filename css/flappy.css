@@ -16,7 +16,7 @@ div[wm-flappy]
 .flappy-bird {
     position: absolute;
     left: calc(50% - 30px);
-    height: 7%;
+    height: 5%;
     z-index: 1;
 }
 
