@@ -11,38 +11,32 @@ function BarrerFrame () {
 };
 
 function Barrer (position) {
-    const element = Element('div', position === 'up' ? 'barrer-up' : 'barrer-down');
-    element.appendChild(Element('div', position === 'up' ? 'barrer-up-end' : 'barrer-down-end'));
-    this.setHeight = height => element.style.height = `${height}px`;
-
-    this.getDomElement = () => {return element};
+    this.barrer = Element('div', position === 'up' ? 'barrer-up' : 'barrer-down');
+    this.barrer.appendChild(Element('div', position === 'up' ? 'barrer-up-end' : 'barrer-down-end'));
+    this.setHeight = height => this.barrer.style.height = `${height}px`;
 };
 
 function BarrerPair (height, openess, xAxis) {
 
-    const frame = new BarrerFrame();
-    const upperBarrer = new Barrer('up');
-    const downBarrer = new Barrer('down');
+    this.frame = new BarrerFrame();
+    this.upperBarrer = new Barrer('up');
+    this.downBarrer = new Barrer('down');
 
-    frame.appendChild(upperBarrer.getDomElement());
-    frame.appendChild(downBarrer.getDomElement());
+    this.frame.appendChild(this.upperBarrer.barrer);
+    this.frame.appendChild(this.downBarrer.barrer);
 
     this.calcOpeness = () => {
         const superHeight = (Math.random() * (height - openess)).toFixed(2);
         const downHeight = (height - openess - superHeight).toFixed(2);
 
-        upperBarrer.setHeight(superHeight);
-        downBarrer.setHeight(downHeight);
+        this.upperBarrer .setHeight(superHeight);
+        this.downBarrer.setHeight(downHeight);
 
     }
 
-    this.getX = () => {return parseInt(frame.style.left.split('px')[0])};
-    this.setX = x => {frame.style.left = `${x}px`};
-    this.getWidth = () => {return frame.clientWidth};
-
-    this.getFrameDomElement = () => {return frame};
-    this.getUpperBarrerDomElement = () => {return upperBarrer.getDomElement()};
-    this.getDownBarrerDomElement = () => {return downBarrer.getDomElement()};
+    this.getX = () => {return parseInt(this.frame.style.left.split('px')[0])};
+    this.setX = x => {this.frame.style.left = `${x}px`};
+    this.getWidth = () => {return this.frame.clientWidth};
 
     this.calcOpeness();
     this.setX(xAxis);
@@ -67,8 +61,7 @@ function BarrerGame (heightGame, widthGame, spaceBetween, openess, increasePoint
             }
 
             const middle = widthGame / 2;
-            const crossMiddle = (pair.getX() + displace) >= middle &&
-                pair.getX() < middle
+            const crossMiddle = (pair.getX() + displace) >= middle && pair.getX() < middle
 
             crossMiddle && increasePoint();
         });
@@ -116,9 +109,6 @@ function Game() {
     const heightGame = areaGame.clientHeight;
     const widthGame = areaGame.clientWidth;
     
-    console.log(heightGame);
-    console.log(widthGame);
-
     const scoreRank = new GameScore();
     const barrers = new BarrerGame(heightGame, widthGame, 400, 100, () =>{
         scoreRank.updateScore(++score);
@@ -128,7 +118,7 @@ function Game() {
     areaGame.appendChild(scoreRank.gameScore);
     areaGame.appendChild(flappy.flappy);
     barrers.barrerArray.forEach((barrer) => {
-        areaGame.appendChild(barrer.getFrameDomElement());
+        areaGame.appendChild(barrer.frame);
     });
     
     this.start = () => {
@@ -157,10 +147,8 @@ function checkCollision(bird,barrer) {
     let collision = false;
     
     barrer.barrerArray.forEach(barrerPair => {
-        if(!collision) {
-            const upperBarrer = barrerPair.getUpperBarrerDomElement();
-            const downBarrer = barrerPair.getDownBarrerDomElement();
-            collision = calculateCollision(bird.flappy,upperBarrer) || calculateCollision(bird.flappy,downBarrer);
+        if(!collision) { 
+            collision = calculateCollision(bird.flappy,barrerPair.upperBarrer.barrer) || calculateCollision(bird.flappy,barrerPair.downBarrer.barrer);
         }
     });
     return collision;
