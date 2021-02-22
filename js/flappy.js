@@ -4,6 +4,10 @@ function Element (elementType, className) {
     return element;
 };
 
+function getAreaGame() {
+    return document.querySelector("[wm-flappy]");
+};
+
 function BarrerFrame () {
     const element = Element('div','barrer');
     element.style.height = '100%';
@@ -105,16 +109,16 @@ function GameScore() {
 
 function Game() {
     let score = 0;
-    const areaGame = document.querySelector("[wm-flappy]");
+    const areaGame = getAreaGame();
     const heightGame = areaGame.clientHeight;
     const widthGame = areaGame.clientWidth;
-    
     const scoreRank = new GameScore();
     const barrers = new BarrerGame(heightGame, widthGame, 400, 100, () =>{
         scoreRank.updateScore(++score);
     });
+    const restart = new Restart();
     const flappy = new Flappy(heightGame);
-
+    
     areaGame.appendChild(scoreRank.gameScore);
     areaGame.appendChild(flappy.flappy);
     barrers.barrerArray.forEach((barrer) => {
@@ -125,10 +129,13 @@ function Game() {
         const timing = setInterval(() => {
             barrers.animate();
             flappy.fly();
-            if(checkCollision(flappy,barrers)){
-                console.log("Ouch!");
-                clearInterval(timing);
-            }
+            restart.showRestart(false);
+                if(checkCollision(flappy,barrers)){
+                    console.log("Ouch!");
+                    //Está reiniciando, mas não  pelos motivos corretos.
+                    restart.showRestart(true);
+                    clearInterval(timing);
+                }
         },20);
     }
 }
@@ -137,8 +144,10 @@ function calculateCollision (bird, barrer) {
     const birdData = bird.getBoundingClientRect();
     const barrerData = barrer.getBoundingClientRect();
 
-    horizontalCollision = birdData.left + birdData.width >= barrerData.left && barrerData.left + barrerData.width >= birdData.left;
-    verticalCollision = birdData.top + birdData.height >= barrerData.top && barrerData.top + barrerData.height >= birdData.top;
+    horizontalCollision = birdData.left + birdData.width >= barrerData.left && 
+        barrerData.left + barrerData.width >= birdData.left;
+    verticalCollision = birdData.top + birdData.height >= barrerData.top && 
+        barrerData.top + barrerData.height >= birdData.top;
 
     return horizontalCollision && verticalCollision;
 }
@@ -148,11 +157,27 @@ function checkCollision(bird,barrer) {
     
     barrer.barrerArray.forEach(barrerPair => {
         if(!collision) { 
-            collision = calculateCollision(bird.flappy,barrerPair.upperBarrer.barrer) || calculateCollision(bird.flappy,barrerPair.downBarrer.barrer);
+            collision = calculateCollision(bird.flappy,barrerPair.upperBarrer.barrer) || 
+            calculateCollision(bird.flappy,barrerPair.downBarrer.barrer);
         }
     });
     return collision;
 }
 
-new Game().start();
+function Restart() {
+    this.restart = Element("div","restart");
+    const anchor = Element("a","");
+    const image = Element("img","");
+    image.src = "imgs/restart-arrow.svg";
+    anchor.href = "";
+    anchor.appendChild( image);
+    this.restart.appendChild(anchor);
 
+    this.showRestart = (show) => {
+        if(show) {
+            getAreaGame().appendChild(this.restart);
+        }
+    }
+};
+
+new Game().start();
