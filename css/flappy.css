@@ -72,6 +72,17 @@ div[wm-flappy]
     border: 2px solid black;
 }
 
+.restart {
+    display: inline-block;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.restart img {
+    height: 45px;
+}
+
 @media (max-width: 320px) {
 .barrer, 
 .barrer-up,
